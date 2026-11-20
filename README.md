@@ -8,6 +8,33 @@
 ## 注意
 由于高驰平台只允许单设备登录，同步期间如果打开网页会影响到数据同步导致同步失败，同步期间切记不要打开网页。
 
+## Local activity backups
+
+`sync-coros-garmin.ps1` can download activities from one account without
+uploading anything to the other service. Choose the source account explicitly:
+
+```powershell
+# Set only the credentials for the selected source.
+$env:GARMIN_EMAIL = "you@example.com"
+$env:GARMIN_PASSWORD = "your-password"
+$env:GARMIN_AUTH_DOMAIN = "COM" # Optional; use CN for China.
+.\sync-coros-garmin.ps1 -Mode backup -Source garmin
+
+$env:COROS_EMAIL = "you@example.com"
+$env:COROS_PASSWORD = "your-password"
+.\sync-coros-garmin.ps1 -Mode backup -Source coros
+```
+
+By default, files are stored in `backups\garmin` or `backups\coros` and are
+named `YYYYMMDDTHHMMSS_<activity-id>.<extension>` using the activity start
+time. Existing activity files are skipped, so rerunning the command downloads
+only files not already present. Use `-Overwrite` to download every activity again, or
+`-OutputDirectory <path>` to use another backup location. The `backups`
+directory is ignored by Git; keep it on durable local or cloud storage.
+
+Running `.\sync-coros-garmin.ps1` with no arguments preserves its original
+COROS to Garmin sync behavior.
+
 ## 参数配置
 |       参数名       |                备注                |        案例        |
 | :----------------: | :--------------------------------: | :----------------: |
